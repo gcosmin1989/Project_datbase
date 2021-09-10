@@ -23,29 +23,30 @@ class Dbh
     public function getTop()
     {
         $sql = "select prod, $this->period(time),sum(value) from actions WHERE type=$this->type group by prod, $this->period(time) ORDER by sum(value) DESC LIMIT 100;";
-        mysqli_query($this->connect(), $sql);
+         mysqli_query($this->connect(), $sql);
+
     }
 
     public function dropTable()
     {
         $sql = "DROP TABLE IF EXISTS tops";
-        mysqli_query($this->connect(), $sql);
+         mysqli_query($this->connect(), $sql);
     }
 
     public function createTable()
     {
         $sql = "CREATE TABLE tops(prod int(3) not null, $this->period int(4) not null, value int(10) not null)";
-        mysqli_query($this->connect(), $sql);
+         mysqli_query($this->connect(), $sql);
     }
 
     public function populateTable()
     {
         $sql = "INSERT INTO tops(prod, $this->period, value) Select prod, $this->period(time),sum(value) from actions WHERE type=$this->type group by prod, $this->period(time) ORDER by sum(value) DESC LIMIT 100 ";
-        mysqli_query($this->connect(), $sql);
+        return mysqli_query($this->connect(), $sql);
 
     }
-    public function createTops(){
-        $sql = "SELECT * FROM `tops` ORDER BY `tops`.`prod` ,`tops`.`$this->period` ASC;";
+    public function selectTops(){
+        $sql = "SELECT * FROM `tops` ORDER BY `tops`.`value` DESC;";
         $results= mysqli_query($this->connect(), $sql);
         return $results;
     }
@@ -57,12 +58,13 @@ class Dbh
         $this->dropTable();
         $this->createTable();
         $this->populateTable();
-        $this->createTops();
+        $this->selectTops();
 
 
     }
 }
-
+$new = new Dbh(1, 'week');
+$results = $new->populateTable();
 
 
 

@@ -6,7 +6,7 @@ class Tops
     public function ReturnArray()
     {
         $new = new Dbh(1, 'month');
-        $results = $new->createTops();
+        $results = $new->selectTops();
         $records = array();
         $period = $new->period;
         while ($row = mysqli_fetch_array($results)) {
@@ -24,6 +24,7 @@ class Tops
     <td>$row[prod]</td>
     <td>$row[$period]</td>
     <td>$row[value]</td>
+    <td>id</td>
   </tr>
     ";
         }
